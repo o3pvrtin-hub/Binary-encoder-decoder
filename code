@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary Translator</title>
+<style>
+  :root {
+    --bg-dark: #121212;
+    --bg-light: #f0f0f0;
+    --text-dark: #c0c0c0;
+    --text-light: #202020;
+    --box-dark: #1e1e1e;
+    --box-light: #ffffff;
+    --border-dark: #333;
+    --border-light: #ccc;
+    --accent: #888;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    font-family: 'Courier New', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 50px 20px;
+    transition: background-color 0.5s, color 0.5s;
+    position: relative;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-align: center;
+  }
+
+  /* Theme toggle button */
+  #themeToggle {
+    width: 50px;
+    height: 50px;
+    background-color: var(--box-dark);
+    border: 2px solid var(--border-dark);
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 8px; /* squaricle */
+    transition: all 0.3s;
+    z-index: 100;
+  }
+
+  #themeToggle:hover {
+    transform: rotate(20deg) scale(1.1);
+    background-color: var(--accent);
+    color: var(--text-light);
+  }
+
+  textarea {
+    background-color: var(--box-dark);
+    border: 1px solid var(--border-dark);
+    color: var(--text-dark);
+    font-family: monospace;
+    font-size: 16px;
+    padding: 15px;
+    margin: 10px 0;
+    width: 90%;
+    max-width: 600px;
+    min-height: 120px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    transition: background-color 0.5s, color 0.5s, border 0.5s;
+  }
+
+  #output {
+    background-color: var(--box-dark);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid var(--border-dark);
+    width: 90%;
+    max-width: 600px;
+    min-height: 120px;
+    margin-top: 20px;
+    overflow-wrap: break-word;
+    transition: background-color 0.5s, color 0.5s, border 0.5s;
+    position: relative;
+  }
+
+  /* Copy button */
+  #copyButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+
+  #copyButton:hover {
+    transform: scale(1.1);
+    background-color: var(--border-dark);
+  }
+
+  label {
+    font-size: 0.9em;
+    color: var(--accent);
+    text-align: center;
+    margin-top: 5px;
+  }
+
+</style>
+</head>
+<body>
+  <div id="themeToggle">☀️</div>
+  <h1>Binary Translator</h1>
+  <textarea id="inputText" placeholder="Type text or binary here..."></textarea>
+  <div id="output">
+    <button id="copyButton">Copy</button>
+  </div>
+  <label>Text ↔ Binary translation happens automatically</label>
+
+<script>
+  const input = document.getElementById('inputText');
+  const output = document.getElementById('output');
+  const themeToggle = document.getElementById('themeToggle');
+  const copyButton = document.getElementById('copyButton');
+  let darkMode = true;
+
+  function isBinary(str) {
+    return /^[01\s]+$/.test(str.trim());
+  }
+
+  function textToBinary(text) {
+    return text.split('').map(c => c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
+  }
+
+  function binaryToText(bin) {
+    return bin.trim().split(' ').map(b => String.fromCharCode(parseInt(b, 2))).join('');
+  }
+
+  input.addEventListener('input', () => {
+    const value = input.value;
+    if (isBinary(value)) {
+      output.textContent = binaryToText(value);
+    } else {
+      output.textContent = textToBinary(value);
+    }
+    output.appendChild(copyButton);
+  });
+
+  themeToggle.addEventListener('click', () => {
+    darkMode = !darkMode;
+    if(darkMode){
+      document.body.style.backgroundColor = 'var(--bg-dark)';
+      document.body.style.color = 'var(--text-dark)';
+      input.style.backgroundColor = 'var(--box-dark)';
+      input.style.color = 'var(--text-dark)';
+      input.style.border = '1px solid var(--border-dark)';
+      output.style.backgroundColor = 'var(--box-dark)';
+      output.style.color = 'var(--text-dark)';
+      output.style.border = '1px solid var(--border-dark)';
+      themeToggle.textContent = '☀️';
+      copyButton.style.backgroundColor = 'var(--accent)';
+      copyButton.style.color = 'var(--text-dark)';
+    } else {
+      document.body.style.backgroundColor = 'var(--bg-light)';
+      document.body.style.color = 'var(--text-light)';
+      input.style.backgroundColor = 'var(--box-light)';
+      input.style.color = 'var(--text-light)';
+      input.style.border = '1px solid var(--border-light)';
+      output.style.backgroundColor = 'var(--box-light)';
+      output.style.color = 'var(--text-light)';
+      output.style.border = '1px solid var(--border-light)';
+      themeToggle.textContent = '🌙';
+      copyButton.style.backgroundColor = 'var(--accent)';
+      copyButton.style.color = 'var(--text-light)';
+    }
+  });
+
+  copyButton.addEventListener('click', () => {
+    const text = output.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      copyButton.textContent = 'Copied!';
+      setTimeout(() => copyButton.textContent = 'Copy', 1000);
+    });
+  });
+</script>
+</body>
+</html>
